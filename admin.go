@@ -336,6 +336,7 @@ func (m *Map) wipeDuplicateTiles(rw http.ResponseWriter, req *http.Request) {
 		}
 		tmp_tile_map := make(map[Coord][]byte)
 		var gridlist [][]byte
+		idset = make(map[[]byte]bool)
 
 		log.Printf("Searching through grids...")
 		err := grids.ForEach(func(k, v []byte) error {
