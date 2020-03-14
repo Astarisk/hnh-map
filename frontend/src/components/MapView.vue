@@ -111,7 +111,7 @@
         },
         mounted() {
             this.$http.get(`${API_ENDPOINT}/v1/characters`).then(response => {
-                this.setupMap(response.body);
+                this.setupMap(decodeURI(response.body));
             }, () => this.$emit("error"));
         },
         beforeDestroy: function () {

@@ -3,7 +3,7 @@ import * as L from "leaflet";
 
 export class Character {
     constructor(characterData) {
-        this.name = decodeURI(characterData.name);
+        this.name = characterData.name;
         this.position = characterData.position;
         this.type = characterData.type;
         this.id = characterData.id;
