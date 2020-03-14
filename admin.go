@@ -322,58 +322,6 @@ func (m *Map) wipeTile(rw http.ResponseWriter, req *http.Request) {
 	http.Redirect(rw, req, "/admin/", 302)
 }
 
-func (m *Map) wipeDuplicateTiles(rw http.ResponseWriter, req *http.Request) {
-	s := m.getSession(req)
-	if s == nil || !s.Auths.Has(AUTH_ADMIN) {
-		http.Redirect(rw, req, "/", 302)
-		return
-	}
-	log.Printf("Checking for duplicates...")
-	m.db.Update(func(tx *bbolt.Tx) error {
-		grids := tx.Bucket([]byte("grids"))
-		if grids == nil {
-			return nil
-		}
-		tmp_tile_map := make(map[Coord][]byte)
-		var gridlist [][]byte
-
-		log.Printf("Searching through grids...")
-		err := grids.ForEach(func(k, v []byte) error {
-			g := GridData{}
-			err := json.Unmarshal(v, &g)
-			if err != nil {
-				return err
-			}
-
-			if v, found := tmp_tile_map[g.Coord]; found {
-				log.Printf("Found a conflict")
-				//Found -- Save the Grid ID to wipe.
-				gridlist = append(gridlist, k)
-				gridlist = append(gridlist, v)
-			} else {
-				//Not Found -- Add value to map
-				tmp_tile_map[g.Coord] = v
-			}
-
-			return nil
-		})
-		log.Printf("Done searching...")
-
-		if err != nil {
-			log.Println(err)
-		}
-
-		log.Printf("Deleting duplicates: %d...", len(gridlist))
-		for _, entry := range gridlist {
-			grids.Delete(entry)
-		}
-		log.Printf("Done Deleting duplicates...")
-		return nil
-	})
-
-	http.Redirect(rw, req, "/admin/", 302)
-}
-
 func (m *Map) backup(rw http.ResponseWriter, req *http.Request) {
 	s := m.getSession(req)
 	if s == nil || !s.Auths.Has(AUTH_ADMIN) {
