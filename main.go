@@ -110,6 +110,7 @@ func main() {
 	http.HandleFunc("/admin/rebuildZooms", m.rebuildZooms)
 	http.HandleFunc("/admin/backup", m.backup)
 	http.HandleFunc("/admin/merge", m.merge)
+	http.HandleFunc("/admin/wipeduplicates", m.wipeDuplicateTiles)
 
 	// Map frontend endpoints
 	http.HandleFunc("/map/api/v1/characters", m.getChars)
