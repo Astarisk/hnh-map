@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"go.etcd.io/bbolt"
 )
@@ -56,6 +57,9 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 				return nil
 			}
 			g := GridData{}
+			if strings.Contains(m.Name, "BORDER_CAIRN:OURS") {
+				m.Image = "gfx/terobjs/mm/cairn"
+			}
 			json.Unmarshal(graw, &g)
 			markers = append(markers, FrontendMarker{
 				Image:  m.Image,
