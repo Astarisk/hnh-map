@@ -2,6 +2,7 @@ import {HnHMaxZoom, ImageIcon} from "../utils/LeafletCustomTypes";
 import * as L from "leaflet";
 
 function detectType(name) {
+    if (name.substring("BORDER_CAIRN:OURS")) return "cairn";
     if (name === "gfx/invobjs/small/bush" || name === "gfx/invobjs/small/bumling") return "quest";
     if (name === "custom") return "custom";
     return name.substring("gfx/terobjs/mm/".length);
@@ -13,7 +14,10 @@ export class Marker {
         this.position = markerData.position;
         this.name = markerData.name;
         this.image = markerData.image;
-        this.type = detectType(this.image);
+        if (markerData.name.substring("BORDER_CAIRN:OURS"))
+            this.type = detectType(markerData.name);
+        else
+            this.type = detectType(this.image);
         this.marker = false;
         this.text = this.name;
         this.value = this.id;
