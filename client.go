@@ -160,6 +160,10 @@ func (m *Map) uploadMarkers(rw http.ResponseWriter, req *http.Request) {
 			if mraw.Image == "" {
 				mraw.Image = "gfx/terobjs/mm/custom"
 			}
+
+			if strings.Contains(mraw.Name, "BORDER_CAIRN:OURS") {
+				mraw.Image = "gfx/terobjs/mm/cairn"
+			}
 			id, err := idB.NextSequence()
 			if err != nil {
 				return err
