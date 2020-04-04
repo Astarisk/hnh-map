@@ -2,6 +2,7 @@ import {HnHMaxZoom, ImageIcon} from "../utils/LeafletCustomTypes";
 import * as L from "leaflet";
 
 function detectType(name) {
+    if (name.substring("BORDER_CAIRN:OURS")) return "cairn";
     if (name === "gfx/invobjs/small/bush" || name === "gfx/invobjs/small/bumling") return "quest";
     if (name === "custom") return "custom";
     return name.substring("gfx/terobjs/mm/".length);
