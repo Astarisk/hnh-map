@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,7 +13,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"golang.org/x/image/draw"
@@ -251,93 +249,93 @@ func (m *Map) mapdataIndex(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
-	if strings.Count(req.Header.Get("Content-Type"), "=") >= 2 && strings.Count(req.Header.Get("Content-Type"), "\"") == 0 {
-		parts := strings.SplitN(req.Header.Get("Content-Type"), "=", 2)
-		req.Header.Set("Content-Type", parts[0]+"=\""+parts[1]+"\"")
-	}
-
-	err := req.ParseMultipartForm(100000000)
-	if err != nil {
-		log.Panic(err)
-	}
-	file, _, err := req.FormFile("file")
-	if err != nil {
-		log.Panic(err)
-	}
-	id := req.FormValue("id")
-	xraw := req.FormValue("x")
-	yraw := req.FormValue("y")
-
-	x, err := strconv.Atoi(xraw)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	y, err := strconv.Atoi(yraw)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	updateTile := false
-	cur := GridData{}
-
-	m.db.Update(func(tx *bbolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte("grids"))
-		if err != nil {
-			return err
-		}
-		curRaw := b.Get([]byte(id))
-		if curRaw != nil {
-			err := json.Unmarshal(curRaw, &cur)
-			if err != nil {
-				return err
-			}
-			if cur.Coord.X != x || cur.Coord.Y != y {
-				return fmt.Errorf("invalid coords")
-			}
-		} else {
-			cur.ID = id
-			cur.Coord.X = x
-			cur.Coord.Y = y
-		}
-
-		updateTile = time.Now().After(cur.NextUpdate)
-
-		if updateTile {
-			cur.NextUpdate = time.Now().Add(time.Minute * 30)
-		}
-
-		raw, err := json.Marshal(cur)
-		if err != nil {
-			return err
-		}
-		b.Put([]byte(id), raw)
-
-		return nil
-	})
-
-	if updateTile {
-		os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
-		f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
-		if err != nil {
-			return
-		}
-		_, err = io.Copy(f, file)
-		if err != nil {
-			f.Close()
-			return
-		}
-		f.Close()
-
-		m.SaveTile(cur.Coord, 0, fmt.Sprintf("0/%s", cur.ID), time.Now().UnixNano())
-
-		c := cur.Coord
-		for z := 1; z <= 5; z++ {
-			c = c.Parent()
-			m.updateZoomLevel(c, z)
-		}
-	}
+	//if strings.Count(req.Header.Get("Content-Type"), "=") >= 2 && strings.Count(req.Header.Get("Content-Type"), "\"") == 0 {
+	//	parts := strings.SplitN(req.Header.Get("Content-Type"), "=", 2)
+	//	req.Header.Set("Content-Type", parts[0]+"=\""+parts[1]+"\"")
+	//}
+	//
+	//err := req.ParseMultipartForm(100000000)
+	//if err != nil {
+	//	log.Panic(err)
+	//}
+	//file, _, err := req.FormFile("file")
+	//if err != nil {
+	//	log.Panic(err)
+	//}
+	//id := req.FormValue("id")
+	//xraw := req.FormValue("x")
+	//yraw := req.FormValue("y")
+	//
+	//x, err := strconv.Atoi(xraw)
+	//if err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+	//y, err := strconv.Atoi(yraw)
+	//if err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+	//
+	//updateTile := false
+	//cur := GridData{}
+	//
+	//m.db.Update(func(tx *bbolt.Tx) error {
+	//	b, err := tx.CreateBucketIfNotExists([]byte("grids"))
+	//	if err != nil {
+	//		return err
+	//	}
+	//	curRaw := b.Get([]byte(id))
+	//	if curRaw != nil {
+	//		err := json.Unmarshal(curRaw, &cur)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		if cur.Coord.X != x || cur.Coord.Y != y {
+	//			return fmt.Errorf("invalid coords")
+	//		}
+	//	} else {
+	//		cur.ID = id
+	//		cur.Coord.X = x
+	//		cur.Coord.Y = y
+	//	}
+	//
+	//	updateTile = time.Now().After(cur.NextUpdate)
+	//
+	//	if updateTile {
+	//		cur.NextUpdate = time.Now().Add(time.Minute * 30)
+	//	}
+	//
+	//	raw, err := json.Marshal(cur)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	b.Put([]byte(id), raw)
+	//
+	//	return nil
+	//})
+	//
+	//if updateTile {
+	//	os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
+	//	f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
+	//	if err != nil {
+	//		return
+	//	}
+	//	_, err = io.Copy(f, file)
+	//	if err != nil {
+	//		f.Close()
+	//		return
+	//	}
+	//	f.Close()
+	//
+	//	m.SaveTile(cur.Coord, 0, fmt.Sprintf("0/%s", cur.ID), time.Now().UnixNano())
+	//
+	//	c := cur.Coord
+	//	for z := 1; z <= 5; z++ {
+	//		c = c.Parent()
+	//		m.updateZoomLevel(c, z)
+	//	}
+	//}
 }
 
 func (m *Map) updateZoomLevel(c Coord, z int) {
