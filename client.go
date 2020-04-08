@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	"image/png"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -259,10 +260,10 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Panic(err)
 	}
-	//file, _, err := req.FormFile("file")
-	//if err != nil {
-	//	log.Panic(err)
-	//}
+	file, _, err := req.FormFile("file")
+	if err != nil {
+		log.Panic(err)
+	}
 	id := req.FormValue("id")
 	xraw := req.FormValue("x")
 	yraw := req.FormValue("y")
@@ -279,6 +280,7 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	updateTile := false
+	upload_snow := false
 	cur := GridData{}
 
 	m.db.Update(func(tx *bbolt.Tx) error {
@@ -299,6 +301,7 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 			cur.ID = id
 			cur.Coord.X = x
 			cur.Coord.Y = y
+			upload_snow = true
 		}
 
 		updateTile = time.Now().After(cur.NextUpdate)
@@ -317,26 +320,27 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 	})
 
 	//if updateTile {
-	//os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
-	//f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
-	//if err != nil {
-	//	return
-	//}
-	//_, err = io.Copy(f, file)
-	//if err != nil {
-	//	f.Close()
-	//	return
-	//}
-	//f.Close()
-	//
-	//m.SaveTile(cur.Coord, 0, fmt.Sprintf("0/%s", cur.ID), time.Now().UnixNano())
-	//
-	//c := cur.Coord
-	//for z := 1; z <= 5; z++ {
-	//	c = c.Parent()
-	//	m.updateZoomLevel(c, z)
-	//}
-	//}
+	if upload_snow {
+		os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
+		f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
+		if err != nil {
+			return
+		}
+		_, err = io.Copy(f, file)
+		if err != nil {
+			f.Close()
+			return
+		}
+		f.Close()
+
+		m.SaveTile(cur.Coord, 0, fmt.Sprintf("0/%s", cur.ID), time.Now().UnixNano())
+
+		c := cur.Coord
+		for z := 1; z <= 5; z++ {
+			c = c.Parent()
+			m.updateZoomLevel(c, z)
+		}
+	}
 }
 
 func (m *Map) updateZoomLevel(c Coord, z int) {
