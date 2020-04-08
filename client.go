@@ -259,10 +259,10 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Panic(err)
 	}
-	file, _, err := req.FormFile("file")
-	if err != nil {
-		log.Panic(err)
-	}
+	//file, _, err := req.FormFile("file")
+	//if err != nil {
+	//	log.Panic(err)
+	//}
 	id := req.FormValue("id")
 	xraw := req.FormValue("x")
 	yraw := req.FormValue("y")
