@@ -316,27 +316,27 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 		return nil
 	})
 
-	if updateTile {
-		//os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
-		//f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
-		//if err != nil {
-		//	return
-		//}
-		//_, err = io.Copy(f, file)
-		//if err != nil {
-		//	f.Close()
-		//	return
-		//}
-		//f.Close()
-		//
-		//m.SaveTile(cur.Coord, 0, fmt.Sprintf("0/%s", cur.ID), time.Now().UnixNano())
-		//
-		//c := cur.Coord
-		//for z := 1; z <= 5; z++ {
-		//	c = c.Parent()
-		//	m.updateZoomLevel(c, z)
-		//}
-	}
+	//if updateTile {
+	//os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
+	//f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
+	//if err != nil {
+	//	return
+	//}
+	//_, err = io.Copy(f, file)
+	//if err != nil {
+	//	f.Close()
+	//	return
+	//}
+	//f.Close()
+	//
+	//m.SaveTile(cur.Coord, 0, fmt.Sprintf("0/%s", cur.ID), time.Now().UnixNano())
+	//
+	//c := cur.Coord
+	//for z := 1; z <= 5; z++ {
+	//	c = c.Parent()
+	//	m.updateZoomLevel(c, z)
+	//}
+	//}
 }
 
 func (m *Map) updateZoomLevel(c Coord, z int) {
