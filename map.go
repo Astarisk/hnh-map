@@ -61,11 +61,19 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 				m.Image = "gfx/terobjs/mm/cairn"
 			}
 			if strings.Contains(m.Name, "BORDER_CAIRN,") {
-				m.Image = "gfx/terobjs/mm/cairn"
+				m.Image = "gfx/terobjs/mm/frendcairn"
 			}
 			if strings.Contains(m.Name, "SEA_MARK:OURS") {
 				m.Image = "gfx/terobjs/mm/seamark"
 			}
+
+			if strings.Contains(m.Name, "BORDER_CAIRN:THEIRS,") {
+				m.Image = "gfx/terobjs/mm/enemycairn"
+			}
+			if strings.Contains(m.Name, "SEA_MARK:THEIRS") {
+				m.Image = "gfx/terobjs/mm/enemyseamark"
+			}
+
 			json.Unmarshal(graw, &g)
 			markers = append(markers, FrontendMarker{
 				Image:  m.Image,
