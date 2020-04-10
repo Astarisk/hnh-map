@@ -58,7 +58,7 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 			}
 			g := GridData{}
 			if strings.Contains(m.Name, "BORDER_CAIRN:OURS") {
-				m.Image = "gfx/terobjs/mm/cairn"
+				m.Image = "gfx/terobjs/mm/frendcairn"
 			}
 			if strings.Contains(m.Name, "BORDER_CAIRN,") {
 				m.Image = "gfx/terobjs/mm/frendcairn"
