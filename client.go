@@ -280,7 +280,7 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	updateTile := false
-	upload_snow := false
+	//upload_snow := false
 	cur := GridData{}
 
 	m.db.Update(func(tx *bbolt.Tx) error {
@@ -301,7 +301,7 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 			cur.ID = id
 			cur.Coord.X = x
 			cur.Coord.Y = y
-			upload_snow = true
+			//upload_snow = true
 		}
 
 		updateTile = time.Now().After(cur.NextUpdate)
@@ -319,8 +319,8 @@ func (m *Map) uploadMinimap(rw http.ResponseWriter, req *http.Request) {
 		return nil
 	})
 
-	//if updateTile {
-	if upload_snow {
+	if updateTile {
+		//if !ignore_snow {
 		os.MkdirAll(fmt.Sprintf("%s/0", m.gridStorage), 0600)
 		f, err := os.Create(fmt.Sprintf("%s/0/%s", m.gridStorage, cur.ID))
 		if err != nil {
